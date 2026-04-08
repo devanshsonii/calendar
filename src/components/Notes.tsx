@@ -50,6 +50,9 @@ export default function NotesPanel({
         setInputValue("");
     };
 
+    const deleteNode = (id: string) => {
+        saveNotes(notes.filter((n) => n.id !== id));
+    }
 
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100%", padding: 16 }}>
@@ -73,7 +76,70 @@ export default function NotesPanel({
                 overflowY: "auto",
                 marginBottom: 12,
                 minHeight: 120,
+                padding: "8px 0",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
             }}>
+                {notes.length === 0 ? (
+                    <div style={{
+                        color: "var(--c-muted)",
+                        fontSize: 11,
+                        fontStyle: "italic",
+                        // paddingTop: 8,
+                    }}>
+                        No notes yet
+                    </div>
+                ) : (
+                    notes.map((note) => (
+                        <div
+                            key={note.id}
+                            style={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                gap: 6,
+                                padding: "0 8px",
+                                height: 24,
+                                position: "relative",
+                            }}
+                            className="group"
+                        >
+                            <span style={{
+                                flex: 1,
+                                fontSize: 11,
+                                color: "var(--c-fg)",
+                                wordBreak: "break-word",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                            }}>
+                                {note.text}
+                            </span>
+                            <button
+                                onClick={() => deleteNode(note.id)}
+                                style={{
+                                    width: 16,
+                                    height: 16,
+                                    padding: 0,
+                                    background: "transparent",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "#ef4444",
+                                    fontSize: 12,
+                                    transition: "opacity 0.2s ease",
+                                }}
+                                title="Delete note"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ))
+                )}
             </div>
 
             <div style={{ display: "flex", gap: 6, marginTop: "auto" }}>

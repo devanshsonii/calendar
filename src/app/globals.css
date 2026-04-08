@@ -125,7 +125,7 @@ body {
       transparent 23px,
       var(--c-notes-line) 23px,
       var(--c-notes-line) 24px);
-  line-height: 24px;
+  line-height: 12px;
 }
 
 
