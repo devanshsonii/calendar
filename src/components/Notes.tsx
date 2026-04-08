@@ -67,7 +67,7 @@ export default function NotesPanel({
         <div style={{ display: "flex", flexDirection: "column", height: "100%", padding: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
                 <h3 style={{
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: 700,
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
@@ -93,7 +93,7 @@ export default function NotesPanel({
                 {notes.length === 0 ? (
                     <div style={{
                         color: "var(--c-muted)",
-                        fontSize: 11,
+                        fontSize: 13,
                         fontStyle: "italic",
                         // paddingTop: 8,
                     }}>
@@ -115,7 +115,7 @@ export default function NotesPanel({
                         >
                             <span style={{
                                 flex: 1,
-                                fontSize: 11,
+                                fontSize: 13,
                                 color: "var(--c-fg)",
                                 wordBreak: "break-word",
                                 overflow: "hidden",
@@ -161,7 +161,7 @@ export default function NotesPanel({
                     style={{
                         flex: 1,
                         padding: "6px 8px",
-                        fontSize: 11,
+                        fontSize: 13,
                         background: "var(--c-hover)",
                         border: "1px solid var(--c-border)",
                         borderRadius: 4,
@@ -177,7 +177,7 @@ export default function NotesPanel({
                         padding: "6px 10px",
                         background: inputValue.trim() ? "var(--c-accent)" : "var(--c-muted)",
                         color: "#fff",
-                        fontSize: 11,
+                        fontSize: 13,
                         fontWeight: 600,
                         borderRadius: 4,
                         border: "none",
