@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 interface NotesPanelProps {
     year: number;
     month: number;
+    rangeStart?: Date | null;
+    rangeEnd?: Date | null;
 }
 
 interface Note {
@@ -12,31 +14,38 @@ interface Note {
     createdAt: string;
 }
 
-function getStorageKey(year: number, month: number): string {
+function getStorageKey(year: number, month: number, rangeStart?: Date | null, rangeEnd?: Date | null): string {
+    if (rangeStart && rangeEnd) {
+        return `calendar-notes-${year}-${month}-${rangeStart.getTime()}-${rangeEnd.getTime()}`;
+    } else if (rangeStart) {
+        return `calendar-notes-${year}-${month}-${rangeStart.getTime()}`;
+    }
     return `calendar-notes-${year}-${month}`;
 }
 export default function NotesPanel({
     year,
     month,
+    rangeStart,
+    rangeEnd,
 }: NotesPanelProps) {
     const [notes, setNotes] = useState<Note[]>([]);
     const [inputValue, setInputValue] = useState("");
 
     useEffect(() => {
-        const stored = localStorage.getItem(getStorageKey(year, month));
+        const stored = localStorage.getItem(getStorageKey(year, month, rangeStart, rangeEnd));
         if (stored) {
             try { setNotes(JSON.parse(stored)); } catch { setNotes([]); }
         } else {
             setNotes([]);
         }
-    }, [year, month]);
+    }, [year, month, rangeStart, rangeEnd]);
 
     const saveNotes = useCallback(
         (updatedNotes: Note[]) => {
             setNotes(updatedNotes);
-            localStorage.setItem(getStorageKey(year, month), JSON.stringify(updatedNotes));
+            localStorage.setItem(getStorageKey(year, month, rangeStart, rangeEnd), JSON.stringify(updatedNotes));
         },
-        [year, month]
+        [year, month, rangeStart, rangeEnd]
     );
 
     const addNote = () => {

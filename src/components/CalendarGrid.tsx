@@ -5,6 +5,8 @@ import {
   getCalendarDays,
   isSameDay,
   format,
+  isBefore,
+  isAfter,
   type CalendarDay,
 } from "@/lib/calendar";
 
@@ -13,11 +15,21 @@ const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 interface CalendarGridProps {
   year: number;
   month: number;
+  rangeStart?: Date | null;
+  rangeEnd?: Date | null;
+  onDateClick?: (date: Date) => void;
+  onDateHover?: (date: Date | null) => void;
+  hoverDate?: Date | null;
 }
 
 export default function CalendarGrid({
   year,
   month,
+  rangeStart,
+  rangeEnd,
+  onDateClick,
+  onDateHover,
+  hoverDate,
 }: CalendarGridProps) {
   const days = getCalendarDays(year, month);
 
@@ -42,6 +54,32 @@ export default function CalendarGrid({
         return { ...base, color: "var(--c-muted)", opacity: 0.25 };
       }
 
+      const isRangeStart = rangeStart && isSameDay(day.date, rangeStart);
+      const isRangeEnd = rangeEnd && isSameDay(day.date, rangeEnd);
+      const isInRange = rangeStart && rangeEnd && 
+        !isBefore(day.date, rangeStart) && 
+        !isAfter(day.date, rangeEnd);
+      
+      if (isRangeStart || isRangeEnd) {
+        return {
+          ...base,
+          background: "var(--c-accent)",
+          color: "#fff",
+          fontWeight: 700,
+          borderRadius: 6,
+        };
+      }
+
+      if (isInRange) {
+        return {
+          ...base,
+          background: "var(--c-range)",
+          color: "var(--c-fg)",
+          fontWeight: 600,
+          borderRadius: 0,
+        };
+      }
+
       if (day.isToday) {
         return {
           ...base,
@@ -57,7 +95,7 @@ export default function CalendarGrid({
       }
       return { ...base, color: "var(--c-fg)" };
     },
-    []
+    [rangeStart, rangeEnd]
   );
 
   return (
@@ -89,6 +127,9 @@ export default function CalendarGrid({
             <div
               style={getDayStyle(day)}
               title={day.holiday || undefined}
+              onClick={() => day.isCurrentMonth && onDateClick?.(day.date)}
+              onMouseEnter={() => day.isCurrentMonth && onDateHover?.(day.date)}
+              onMouseLeave={() => day.isCurrentMonth && onDateHover?.(null)}
             >
               {format(day.date, "d")}
               {day.holiday && day.isCurrentMonth && (

@@ -8,6 +8,7 @@ import {
     addMonths,
     subMonths,
     isBefore,
+    isAfter,
     isSameMonth,
     isSameDay,
     getDay,
@@ -60,4 +61,4 @@ export const MONTH_IMAGES: Record<number, { url: string; credit: string; gradien
     11: { url: "https://picsum.photos/seed/december/800/600", credit: "Winter Wonderland", gradientFrom: "#2563eb", gradientTo: "#312e81" },
 };
 
-export { format, addMonths, subMonths, isSameDay, isBefore };
+export { format, addMonths, subMonths, isSameDay, isBefore, isAfter };

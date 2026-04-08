@@ -5,12 +5,17 @@ import {
     addMonths,
     subMonths,
     MONTH_IMAGES,
+    isSameDay,
+    isBefore,
 } from "@/lib/calendar";
 import NotesPanel from './Notes';
 import CalendarGrid from './CalendarGrid';
 
 export default function WallCalendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [rangeStart, setRangeStart] = useState<Date | null>(null);
+    const [rangeEnd, setRangeEnd] = useState<Date | null>(null);
+    const [hoverDate, setHoverDate] = useState<Date | null>(null);
     const [theme, setTheme] = useState<"light" | "dark">("light");
     const [flipKey, setFlipKey] = useState(0);
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -44,12 +49,42 @@ export default function WallCalendar() {
         setCurrentDate((prev) =>
             direction === "next" ? addMonths(prev, 1) : subMonths(prev, 1)
         );
+        setRangeStart(null);
+        setRangeEnd(null);
+        setHoverDate(null);
         setFlipKey((k) => k + 1);
     }, []);
 
     const goToToday = useCallback(() => {
         setCurrentDate(new Date());
+        setRangeStart(null);
+        setRangeEnd(null);
         setFlipKey((k) => k + 1);
+    }, []);
+
+    const handleDateClick = useCallback(
+        (date: Date) => {
+            if (!rangeStart || rangeEnd) {
+                setRangeStart(date);
+                setRangeEnd(null);
+            } else {
+                if (isSameDay(date, rangeStart)) {
+                    setRangeStart(null);
+                    setRangeEnd(null);
+                } else if (isBefore(date, rangeStart)) {
+                    setRangeEnd(rangeStart);
+                    setRangeStart(date);
+                } else {
+                    setRangeEnd(date);
+                }
+            }
+        },
+        [rangeStart, rangeEnd]
+    );
+
+    const clearSelection = useCallback(() => {
+        setRangeStart(null);
+        setRangeEnd(null);
     }, []);
 
     return (
@@ -164,18 +199,39 @@ export default function WallCalendar() {
                 <div className='calendar-container'>
                         
                     <div className="calendar-flip" key={`grid-${flipKey}`}>
+                        {rangeStart && (
+                            <div className="flex items-center justify-between px-4 py-1.5"
+                                style={{ background: "var(--c-accent-light)", borderBottom: "1px solid var(--c-border)" }}>
+                                <span className="text-xs font-medium" style={{ color: "var(--c-accent)" }}>
+                                    {rangeEnd
+                                        ? `${format(rangeStart, "MMM d")} — ${format(rangeEnd, "MMM d, yyyy")}`
+                                        : `${format(rangeStart, "MMM d, yyyy")} selected`}
+                                </span>
+                                <button onClick={clearSelection} className="text-xs font-medium"
+                                    style={{ color: "var(--c-muted-dark)", cursor: "pointer", background: "none", border: "none" }}>
+                                    Clear
+                                </button>
+                            </div>
+                        )}
                         <div className="flex flex-col sm:flex-row" style={{ minHeight: 280 }}>
                             <div className="sm:w-2/5 flex flex-col"
                                 style={{ borderRight: "1px solid var(--c-border)" }}>
                                 <NotesPanel
                                     year={year}
                                     month={month}
+                                    rangeStart={rangeStart}
+                                    rangeEnd={rangeEnd}
                                 />
                             </div>
                             <div className="sm:w-3/5 px-4 sm:px-5 py-4 ">
                                 <CalendarGrid
                                     year={year}
                                     month={month}
+                                    rangeStart={rangeStart}
+                                    rangeEnd={rangeEnd}
+                                    onDateClick={handleDateClick}
+                                    onDateHover={setHoverDate}
+                                    hoverDate={hoverDate}
                                 />
                             </div>
                         </div>
