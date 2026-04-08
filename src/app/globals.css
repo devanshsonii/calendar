@@ -1,26 +1,168 @@
 @import "tailwindcss";
+@source "../components";
+@source "../lib";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --c-bg: #e8e8e8;
+  --c-fg: #1a1a1a;
+  --c-card: #ffffff;
+  --c-accent: #1a9fdb;
+  --c-accent-dark: #1480b3;
+  --c-accent-light: #e0f3fc;
+  --c-range: #e0f3fc;
+  --c-weekend: #1a9fdb;
+  --c-muted: #b0b0b0;
+  --c-muted-dark: #888888;
+  --c-border: #e5e7eb;
+  --c-notes-line: #d4d4d4;
+  --c-hover: #f3f4f6;
+  --c-spiral: #999999;
+}
+
+[data-theme="dark"] {
+  --c-bg: #1a1a2e;
+  --c-fg: #e8e8e8;
+  --c-card: #20213a;
+  --c-accent: #3bb5e8;
+  --c-accent-dark: #2a9ad4;
+  --c-accent-light: #1a3040;
+  --c-range: #1a3040;
+  --c-weekend: #3bb5e8;
+  --c-muted: #555566;
+  --c-muted-dark: #888899;
+  --c-border: #2e2e45;
+  --c-notes-line: #333348;
+  --c-hover: #2a2a42;
+  --c-spiral: #555566;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--c-bg);
+  color: var(--c-fg);
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+.wall-calendar {
+  background: var(--c-card);
+  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.25), 0 5px 15px -3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .wall-calendar {
+  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.5), 0 5px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+.spiral-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  background: var(--c-card);
+  overflow: visible;
+  z-index: 20;
+}
+
+.spiral-wire {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  z-index: 30;
+}
+
+.spiral-ring {
+  width: 16px;
+  height: 28px;
+  border: 2.5px solid var(--c-spiral);
+  border-radius: 8px;
+  background: transparent;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 55%;
+  height: 30%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-overlay::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--c-accent);
+  clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
+  opacity: 0.92;
+}
+
+.hero-overlay::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 115%;
+  height: 100%;
+  background: var(--c-accent);
+  clip-path: polygon(30% 40%, 45% 0%, 48% 0%, 33% 40%, 100% 40%, 100% 100%, 0% 100%);
+  opacity: 0.35;
+}
+
+.notes-lines {
+  background-image: repeating-linear-gradient(transparent,
+      transparent 23px,
+      var(--c-notes-line) 23px,
+      var(--c-notes-line) 24px);
+  line-height: 24px;
+}
+
+
+.calendar-container {
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
+}
+
+.calendar-flip {
+  transform-origin: top center;
+  animation: flipIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+@keyframes flipIn {
+  0% {
+    transform: rotateX(-110deg);
+    opacity: 0
+  }
+
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1
+  }
+}
+
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-muted);
+  border-radius: 3px;
 }
