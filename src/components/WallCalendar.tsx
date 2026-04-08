@@ -150,7 +150,7 @@ export default function WallCalendar() {
                 </div>
 
                 <div className="relative calendar-flip" key={`img-${flipKey}`}>
-                    <div className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
+                    <div className="relative overflow-hidden sm:max-h-none max-h-0" style={{ aspectRatio: "4/3" }}>
                         <div
                             className="absolute inset-0"
                             style={{
